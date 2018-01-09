@@ -91,8 +91,7 @@ namespace Calculator_1
                         break;
                     }
             }
-
-
+            
             sb.Clear();
             WriteToDisplay(total.ToString());
         }
@@ -104,9 +103,8 @@ namespace Calculator_1
 
         private void btnClear_Click(object sender, EventArgs e)
         {
+            sb.Clear();
             WriteToDisplay("0");
-            total = 0.0d;
-            workingNumber = 0.0d;
         }
 
         private void btnEight_Click(object sender, EventArgs e)
@@ -215,11 +213,20 @@ namespace Calculator_1
 
         private void txtDisplay_KeyPress(object sender, KeyPressEventArgs e)
         {
-            //check text in text box
+            //todo: add key press details
+        }
+
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
             if (allowedChar.Contains(e.KeyChar))
             {
-                MessageBox.Show("It is ok");
+                UpdateDisplayString(e.KeyChar);
             }
+            else if(allowedOps.Contains(e.KeyChar))
+            {
+                PerformCalculation(e.KeyChar);
+            }
+            
         }
     }
 }

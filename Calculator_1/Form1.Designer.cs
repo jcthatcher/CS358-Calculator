@@ -221,14 +221,17 @@
             // 
             // txtDisplay
             // 
+            this.txtDisplay.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.txtDisplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 28F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDisplay.Location = new System.Drawing.Point(34, 24);
             this.txtDisplay.Multiline = true;
             this.txtDisplay.Name = "txtDisplay";
+            this.txtDisplay.ReadOnly = true;
             this.txtDisplay.Size = new System.Drawing.Size(256, 48);
             this.txtDisplay.TabIndex = 17;
             this.txtDisplay.Text = "0";
             this.txtDisplay.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtDisplay.WordWrap = false;
             this.txtDisplay.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtDisplay_KeyPress);
             // 
             // Form1
@@ -254,9 +257,11 @@
             this.Controls.Add(this.btnSeven);
             this.Controls.Add(this.btnFour);
             this.Controls.Add(this.btnSlash);
+            this.KeyPreview = true;
             this.Name = "Form1";
             this.Text = "Calculator";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.ResumeLayout(false);
             this.PerformLayout();
 
