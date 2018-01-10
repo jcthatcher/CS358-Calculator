@@ -173,7 +173,7 @@
             // 
             this.btnZero.Location = new System.Drawing.Point(12, 246);
             this.btnZero.Name = "btnZero";
-            this.btnZero.Size = new System.Drawing.Size(124, 36);
+            this.btnZero.Size = new System.Drawing.Size(126, 36);
             this.btnZero.TabIndex = 11;
             this.btnZero.TabStop = false;
             this.btnZero.Text = "0";
