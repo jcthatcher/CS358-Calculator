@@ -16,6 +16,12 @@ namespace Calculator_1
             InitializeComponent();
         }
 
+        private void ButtonClickCharacter(object sender, EventArgs e)
+        {
+            Button btnWorking = (Button)sender;
+            UpdateDisplayString(Convert.ToChar(btnWorking.Text));
+        }
+
         private void WriteToDisplay(string textToDisplay)
         {
             txtDisplay.Text = textToDisplay;
@@ -131,24 +137,7 @@ namespace Calculator_1
 
         private void btnPeriod_Click(object sender, EventArgs e)
         {
-            int j = 0;
-            foreach (char c in sb1.ToString())
-            {
-                if (c == '.')
-                {
-                    j += 1;
-                }
-            }
 
-            if (j > 1)
-            {
-                MessageBox.Show("Only one decimal allowed");
-            }
-            else
-            {
-                UpdateDisplayString('.');
-            }
-            
         }
 
         private void btnEqual_Click(object sender, EventArgs e)
