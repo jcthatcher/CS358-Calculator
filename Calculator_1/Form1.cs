@@ -1,110 +1,87 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Calculator_1
 {
     public partial class Form1 : Form
     {
-        double total;
-        double workingNumber;
-        char[] allowedChar;
-        char[] allowedOps;
-        char ops;
-        StringBuilder sb;
+        CalculatorOps Calc;
+        StringBuilder sb1;
 
         public Form1()
         {
-            total = 0.0d;
-            workingNumber = 0.0d;
-            allowedChar = new char[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.' };
-            allowedOps = new char[] { '+', '-', '*', '/', '=' };
+            sb1 = new StringBuilder("0");
             InitializeComponent();
         }
 
-        private void WriteToDisplay(string s)
+        private void WriteToDisplay(string textToDisplay)
         {
-            txtDisplay.Text = s;
+            txtDisplay.Text = textToDisplay;
+        }
+
+        private void ClearDisplay()
+        {            
+            UpdateDisplayString('0');
         }
 
         private void UpdateDisplayString(char key)
         {
-
-            if (!allowedChar.Contains(key))
+            if (!Calc.CharacterAllowed(key))
             {
-                MessageBox.Show("Invalid Input. You entered {0}.",key.ToString());
-            }
-
-            while (sb.Length>0 && sb[0] == '0')
+                MessageBox.Show("Invalid Input. You entered {0}.", key.ToString());
+            }     
+            
+            if(sb1.Length>0 && sb1[0] == '0')
             {
-                sb.Remove(0, 1);
+                sb1.Remove(0, 1);
             }
             
-            WriteToDisplay(sb.Append(key).ToString());    
+            //Add number to string.            
+            sb1.Append(key);
+
+            WriteToDisplay(sb1.ToString());         
             
         }
-
-        private void ClearDisplay()
+        
+        private void EvaluateOperatorKeyPress(char c) //operation key (+,*,-,/,=)  pressed.  
         {
-            UpdateDisplayString('0');
-        }
+            string result;
+            double valid;
 
-        private void PerformCalculation(char c)
-        {
-            if (!double.TryParse(sb.ToString(), out workingNumber) || c!='.')
+            //Check to see if there is new input in textbox...
+            if (sb1.Length == 0)
             {
-                MessageBox.Show("Numbers Only, Check Your Display.");
-            }
+                sb1.Append(txtDisplay.Text);
+            }            
             
-            switch (c)
+            //Validate input and write to double.
+            if (!double.TryParse(sb1.ToString(), out valid))
             {
-                case '+':
-                    {
-                        total += workingNumber;
+                MessageBox.Show("You must enter a number");
+            }
 
-                        break;
-                    }
-                case '-':
-                    {
-                        total -= workingNumber;
-                        break;
-                    }
-                case '*':
-                    {
-                        total *= workingNumber;
-                        break;
-                    }
-                case '/':
-                    {
-                        total /= workingNumber;
-                        break;
-                    }
-                    
-                default:
-                    {
-                        break;
-                    }
-            }
+            result = Calc.EvaluateOperator(c, valid);
             
-            sb.Clear();
-            WriteToDisplay(total.ToString());
+            //Write the total to the display.
+            WriteToDisplay(result);
+
+            //Clear String Builder to accept new input....
+            sb1.Clear();          
         }
 
         private void btnSeven_Click(object sender, EventArgs e)
         {
+            //Apend SB and write to textbox;
             UpdateDisplayString('7');
         }
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            sb.Clear();
-            WriteToDisplay("0");
+            sb1.Clear();
+            Calc.ResetCalcatorOps();
+            ClearDisplay();
         }
 
         private void btnEight_Click(object sender, EventArgs e)
@@ -154,7 +131,16 @@ namespace Calculator_1
 
         private void btnPeriod_Click(object sender, EventArgs e)
         {
-            if(txtDisplay.Text.Contains('.'))
+            int j = 0;
+            foreach (char c in sb1.ToString())
+            {
+                if (c == '.')
+                {
+                    j += 1;
+                }
+            }
+
+            if (j > 1)
             {
                 MessageBox.Show("Only one decimal allowed");
             }
@@ -162,36 +148,32 @@ namespace Calculator_1
             {
                 UpdateDisplayString('.');
             }
+            
         }
 
         private void btnEqual_Click(object sender, EventArgs e)
         {
-            PerformCalculation(ops);
-            sb.Append(total);
+            EvaluateOperatorKeyPress('=');
         }
 
         private void btnPlus_Click(object sender, EventArgs e)
         {
-            ops = '+';
-            PerformCalculation('+');
+            EvaluateOperatorKeyPress('+');
         }
 
         private void btnDash_Click(object sender, EventArgs e)
         {
-            ops = '-';
-            PerformCalculation('-');
+            EvaluateOperatorKeyPress('-');
         }
 
         private void btnAsterisk_Click(object sender, EventArgs e)
         {
-            ops = '*';
-            PerformCalculation('*');
+            EvaluateOperatorKeyPress('*');
         }
 
         private void btnSlash_Click(object sender, EventArgs e)
         {
-            ops = '/';
-            PerformCalculation('/');
+            EvaluateOperatorKeyPress('/');
         }
 
         private void btnClear_MouseHover(object sender, EventArgs e)
@@ -201,14 +183,8 @@ namespace Calculator_1
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            ToolTip tt1 = new ToolTip();
-            tt1.AutoPopDelay = 3000;
-            tt1.InitialDelay = 100;
-            tt1.ReshowDelay = 5000;
-
-            tt1.SetToolTip(this.btnClear, "Press ONCE to clear screen, TWICE to clear memory");
-
-            sb = new StringBuilder("0");
+            Calc = new CalculatorOps();
+            sb1 = new StringBuilder("0");
         }
 
         private void txtDisplay_KeyPress(object sender, KeyPressEventArgs e)
@@ -218,13 +194,13 @@ namespace Calculator_1
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (allowedChar.Contains(e.KeyChar))
+            if (Calc.CharacterAllowed(e.KeyChar))
             {
                 UpdateDisplayString(e.KeyChar);
             }
-            else if(allowedOps.Contains(e.KeyChar))
+            else if(Calc.OperatorAllowed(e.KeyChar))
             {
-                PerformCalculation(e.KeyChar);
+                EvaluateOperatorKeyPress(e.KeyChar);
             }
             
         }
