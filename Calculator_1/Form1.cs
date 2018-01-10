@@ -22,6 +22,12 @@ namespace Calculator_1
             UpdateDisplayString(Convert.ToChar(btnWorking.Text));
         }
 
+        private void ButtonClickOperator(object sender, EventArgs e)
+        {
+            Button btnWorking = (Button)sender;
+            EvaluateOperatorKeyPress(Convert.ToChar(btnWorking.Text));
+        }
+
         private void WriteToDisplay(string textToDisplay)
         {
             txtDisplay.Text = textToDisplay;
