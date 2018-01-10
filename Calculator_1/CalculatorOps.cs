@@ -11,14 +11,12 @@ namespace Calculator_1
         double total;
         char[] allowedChar;
         char[] allowedOps;
-        char ops;
 
         public CalculatorOps()
         {
             total = 0.0d;
             allowedChar = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.' };
-            allowedOps = new char[] { '+', '-', '*', '/', '=' };
-            ops = '=';
+            allowedOps = new char[] { '+', '-', '*', '/', '=', (char)13 };
         }
         
         public bool OperatorAllowed(char operatorToEvaluate)
@@ -31,6 +29,7 @@ namespace Calculator_1
             return allowedChar.Contains(characterToEvaluate);
         }
 
+        //overkill here but...s
         public double AddTwoNumbers(double a, double b)
         {
             return a + b;
@@ -54,26 +53,28 @@ namespace Calculator_1
         public void ResetCalcatorOps()
         {
             total = 0.00d;
-            ops = '=';
         }
 
-        public string EvaluateOperator(char c, double number)
+        public string EvaluateOperator(char ops, double number)
         {
-            //Are there operations to be performed on this number? Is ops <> '=';
-            if (ops != '=')
+            if(ops == '/' && number == 0)
             {
-                total = PerformCalculation(number); //Perform calculations.
+                return "NaN: X / 0";
+            }
+
+            //Are there operations to be performed on this number? Is ops <> '=';
+            else if (ops != '=' && ops != (char)13)
+            {
+                total = PerformCalculation(number, ops); //Perform calculations.
             }
             else
             {
                 total = number;                
             }
-
-            ops = c;
             return total.ToString();
         }
 
-        private double PerformCalculation(double number)
+        private double PerformCalculation(double number, char ops)
         {
             switch (ops)
             {
