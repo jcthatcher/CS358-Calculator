@@ -10,23 +10,28 @@ namespace Calculator_1
     {
         char ops;
         bool displayDirty;
-        const int characterLimit = 19; //limits the length of number left / right of decimal in calc...
-        const int displayLimit = 8; //Sets the display Limit will display exponent if over limit....
-        CalculatorOps Calc;
-        DisplayOperations Disp;
+        CalculatorOperations CalcOps;
+        DisplayOperations DisplayOps;
         StringBuilder displayText;
 
         public Form1()
         {
+            CalcOps = new CalculatorOperations();
+            DisplayOps = new DisplayOperations(19, 9);
+            displayText = new StringBuilder("0");
             ops = '=';
             displayDirty = false;
-            displayText = new StringBuilder("0");
             InitializeComponent();
         }
-        
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
         private void EvaluateOperatorKeyPress(char c) //operation key (+,*,-,/,=)  pressed.  
         {
-            string result;
+            string[] result;
             double valid;
 
             //Check to see if there is new input in textbox...Ensure someone is not just hitting + over and over.
@@ -45,10 +50,18 @@ namespace Calculator_1
                     displayDirty = false;
 
                     //Perform any calculator operations previously required before preparing for new ops (i.e. new key press)
-                    result = Calc.EvaluateOperator(ops, valid);
+                    result = CalcOps.EvaluateOperator(ops, valid);
 
                     //Write result to the display.
-                    WriteToDisplay(result);
+                    if(result[0] == "-1")
+                    {
+                        WriteToDisplay(result[1], false);
+                    }
+                    else
+                    {
+                        WriteToDisplay(result[1], true);
+                    }
+                    
                 }  
             }
             
@@ -59,13 +72,13 @@ namespace Calculator_1
         private void EvaluateCharacterKeyPress(char key)
         {
             //Validate character...
-            if (!Calc.CharacterAllowed(key))
+            if (!CalcOps.CharacterAllowed(key))
             {
                 MessageBox.Show("Invalid Input. You entered: " + key.ToString());
             }
 
             //Remove leading zeros...
-            if (displayText.Length > 0 && displayText[0] == '0')
+            if ((displayText.Length > 0) && (displayText[0] == '0'))
             {
                 displayText.Remove(0, 1);
             }
@@ -74,22 +87,21 @@ namespace Calculator_1
             displayText.Append(key);
 
             //Update display with sb value.
-            WriteToDisplay(displayText.ToString());
+            WriteToDisplay(displayText.ToString(), true);
+        }
 
+        private void WriteToDisplay(string textToDisplay, bool number)
+        {
+            string result = DisplayOps.GetFormattedDisplayText(textToDisplay, number);
+            txtDisplay.Text = result;
         }
 
         private void btnClear_Click(object sender, EventArgs e)
         {
             displayText.Clear();
             ops = '=';
-            Calc.ResetCalcatorOps();
+            CalcOps.ResetCalcatorOps();
             ClearDisplay();
-        }
-        
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            Calc = new CalculatorOps();
-            displayText = new StringBuilder("0");
         }
         
         private void ButtonClickCharacter(object sender, EventArgs e)
@@ -104,12 +116,7 @@ namespace Calculator_1
             Button btnWorking = (Button)sender;
             EvaluateOperatorKeyPress(Convert.ToChar(btnWorking.Text));
         }
-
-        private void WriteToDisplay(string textToDisplay)
-        {
-            txtDisplay.Text = textToDisplay;
-        } 
-
+      
         private void ClearDisplay()
         {
             EvaluateCharacterKeyPress('0');
@@ -119,12 +126,12 @@ namespace Calculator_1
         //Capture Key Press to allow 10 key entry.  Much preferred.
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (Calc.CharacterAllowed(e.KeyChar))
+            if (CalcOps.CharacterAllowed(e.KeyChar))
             {
                 displayDirty = true;
                 EvaluateCharacterKeyPress(e.KeyChar);
             }
-            else if (Calc.OperatorAllowed(e.KeyChar))
+            else if (CalcOps.OperatorAllowed(e.KeyChar))
             {
                 EvaluateOperatorKeyPress(e.KeyChar);
             }

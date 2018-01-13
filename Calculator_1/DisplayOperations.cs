@@ -100,9 +100,10 @@ namespace Calculator_1
         {
             if (displayText.Contains('.'))
             {
+                decimalPresent = true;
+
                 if (displayText.IndexOf('.') == displayText.LastIndexOf('.'))
-                {
-                    decimalPresent = true;
+                {                    
                     decimalPosition = displayText.IndexOf('.');
                     leftOfDecimalLength = decimalPosition - 1;
                     rightOfDecimalLength = displayText.Length - decimalPosition - 1;
@@ -127,23 +128,31 @@ namespace Calculator_1
                 if (displayText.Length > characterLimit)
                 {
                     tooBig = true;
-                    FormattedText = "num too big";
+                    FormattedText = "TOO BIG";
                 }
-                if (displayText.Length > displayLimit)
+                else if (displayText.Length > displayLimit)
                 {
                     exp = true;
                     CreateExponent();
                 }
-                if (decimalPresent && leftOfDecimalLength > 3)
+                else if (decimalPresent && leftOfDecimalLength > 3)
                 {
                     needsComma = true;
                     InsertComma();
                 }
-                else if(!decimalPresent && displayText.Length > 3)
+                else if (!decimalPresent && displayText.Length > 3)
                 {
                     needsComma = true;
                     InsertComma();
                 }
+                else
+                {
+                    FormattedText = displayText;
+                }
+            }
+            else
+            {
+                FormattedText = displayText;
             }
         }
 
@@ -160,7 +169,13 @@ namespace Calculator_1
             double e;
             string workingText = displayText;
 
-            if (leftOfDecimalLength > 0)
+            if (!decimalPresent)
+            {
+                int fromPosition = workingText.Length;
+                int toPosition = 1;
+                e = fromPosition - toPosition;
+            }
+            else if (leftOfDecimalLength > 1 )
             {
                 int fromPosition = decimalPosition;
                 int toPosition = 1;
@@ -193,8 +208,8 @@ namespace Calculator_1
             if (d >= 1.000)
             {
                 double e = Convert.ToDouble(result);
-                e = Math.Pow(e, displayLimit - 1);
-                e = Math.Round(e, displayLimit - 2);
+                e = e / Math.Pow(10, displayLimit - 1);
+                e = Math.Round(e, displayLimit - 4);
                 result = e.ToString();
             }
             else
@@ -216,23 +231,24 @@ namespace Calculator_1
         {
             int commaPosition = 3; //if 3, commas will be inserted every 3rd character.
             int holder;
-            FormattedText = displayText;
+            StringBuilder s = new StringBuilder(displayText);
 
             if (!decimalPresent)
             {
-                holder = FormattedText.Length;
+                holder = s.Length;
             }
             else
             {
                 holder = decimalPosition;
             }
-
-            do
-            {
+            
+            while (holder > commaPosition)
+            {            
                 holder -= commaPosition; //"12345" length = 5 & string is an array of char so end is 4 (0-4)
-                FormattedText.Insert(holder, ","); // using comment above 5-3 inserts at array[3] or moves 3 over and inserts comma between 2 & 3...12,345
+                s.Insert(holder, ","); // using comment above 5-3 inserts at array[3] or moves 3 over and inserts comma between 2 & 3...12,345                
+            };
 
-            } while (holder > 0);                        
+            FormattedText = s.ToString();
         }
     }  
 }

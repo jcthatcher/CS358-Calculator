@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Calculator_1
 {
-    class CalculatorOps
+    class CalculatorOperations
     {
         double total;
         char[] allowedChar;
         char[] allowedOps;
 
-        public CalculatorOps()
+        public CalculatorOperations()
         {
             total = 0.0d;
             allowedChar = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.' };
@@ -29,7 +29,7 @@ namespace Calculator_1
             return allowedChar.Contains(characterToEvaluate);
         }
 
-        //overkill here but...s
+        //overkill here but...
         public double AddTwoNumbers(double a, double b)
         {
             return a + b;
@@ -55,23 +55,29 @@ namespace Calculator_1
             total = 0.00d;
         }
 
-        public string EvaluateOperator(char ops, double number)
+        public string[] EvaluateOperator(char ops, double number)
         {
+            string msg, error = " ";
             if(ops == '/' && number == 0)
             {
-                return "NaN: X / 0";
+                msg = "-1";
+                error = "DIV BY ZERO";
             }
 
             //Are there operations to be performed on this number? Is ops <> '=';
             else if (ops != '=' && ops != (char)13)
             {
+                msg = "0";
                 total = PerformCalculation(number, ops); //Perform calculations.
             }
             else
             {
+                msg = "0";
                 total = number;                
             }
-            return total.ToString();
+
+            string[] result = { msg, msg=="-1" ? error : total.ToString()};
+            return result;
         }
 
         private double PerformCalculation(double number, char ops)
