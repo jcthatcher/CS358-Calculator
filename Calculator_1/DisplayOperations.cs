@@ -116,7 +116,104 @@ namespace Calculator_1
                 }
             }            
         }
+
+        private void GetExpDecimal()
         
+        {
+            string dec = displayText;
+
+            bool canBeADouble = double.TryParse(dec, out double z);
+            int decimalLocation;
+            int firstNonZeroNumber = 0;
+            string eNotation = " ";
+            int maxLength = 9;
+            string result = "0";
+
+            if (canBeADouble)
+            {
+                decimalLocation = dec.IndexOf('.');
+
+                if (z >= 1)
+                {
+                    if (decimalLocation == 1)
+                    {
+                        result = dec;
+                        eNotation = "e" + (decimalLocation - 1).ToString();
+                    }
+                    else
+                    {
+                        string temp = dec.Insert(1, ".");
+                        string temp2 = temp.Remove(decimalLocation + 1, 1);
+                        result = temp2;
+                        eNotation = "e" + (decimalLocation - 1).ToString();
+                    }
+                }
+                else
+                {
+                    //remove leading zero if any;
+                    while (dec[0].Equals('0'))
+                    {
+                        string temp3 = dec.Remove(0, 1);
+                        dec = temp3;
+                    }
+
+                    //remove decimal at [0]
+                    while (dec[0].Equals('.'))
+                    {
+                        string temp4 = dec.Remove(0, 1);
+                        dec = temp4;
+                    }
+
+                    bool found = false;
+                    int p = 0;
+
+                    //Find first non zero number...
+                    while (!found)
+                    {
+                        if (!dec[p].Equals('0'))
+                        {
+                            found = true;
+                            firstNonZeroNumber = p;
+                        }
+                        p += 1;
+                    }
+
+
+                    if (p == 0)
+                    {
+                        result = dec.Insert(1, ".");
+                        eNotation = "e" + (firstNonZeroNumber + 1).ToString();
+                    }
+                    else
+                    {
+                        string temp6 = dec.Insert(firstNonZeroNumber + 1, ".");
+                        string temp7 = temp6.Remove(0, firstNonZeroNumber);
+                        result = temp7;
+                        eNotation = "e" + (-1 * (firstNonZeroNumber + 1)).ToString();
+                    }
+                }
+            }
+
+            //what is length?
+            int resultLength = result.Length;
+            //Make it at lease max minus length to display max e notation i.e. e-20
+
+            while (result.Length < 5)
+            {
+                result += "0";
+            }
+
+            if (result.Length > 5)
+            {
+                string temp11 = result.Remove(maxLength - 4, resultLength - (maxLength - 4));
+                result = temp11;
+            }
+
+            FormattedText = result + eNotation;
+        }
+
+        
+
         //Display rules and check for violation....
         private void ValidateDisplayText()
         {
@@ -133,7 +230,14 @@ namespace Calculator_1
                 else if (displayText.Length > displayLimit)
                 {
                     exp = true;
-                    CreateExponent();
+                    if (decimalPresent)
+                    {
+                        GetExpDecimal();
+                    }
+                    else
+                    {
+                        CreateExponent();
+                    }                    
                 }
                 else if (decimalPresent && leftOfDecimalLength > 3)
                 {

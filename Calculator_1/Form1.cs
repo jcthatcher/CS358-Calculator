@@ -123,7 +123,7 @@ namespace Calculator_1
         }
 
 
-        //Capture Key Press to allow 10 key entry.  Much preferred.
+        //Capture Key Press to allow 10 key entry. 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (CalcOps.CharacterAllowed(e.KeyChar))
