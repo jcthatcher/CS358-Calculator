@@ -17,7 +17,7 @@ namespace Calculator_1
         public Form1()
         {
             CalcOps = new CalculatorOperations();
-            DisplayOps = new DisplayOperations(19, 9);
+            DisplayOps = new DisplayOperations(15, 9);
             displayText = new StringBuilder("0");
             ops = '=';
             displayDirty = false;
@@ -64,6 +64,7 @@ namespace Calculator_1
                 }  
             }
             
+
             //Record new ops to be performed according to key press.
             ops = c;            
         }
