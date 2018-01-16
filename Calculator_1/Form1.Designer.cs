@@ -238,8 +238,8 @@
             // txtDisplay
             // 
             this.txtDisplay.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.txtDisplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 28F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDisplay.Location = new System.Drawing.Point(12, 15);
+            this.txtDisplay.Font = new System.Drawing.Font("Arial Narrow", 28F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDisplay.Location = new System.Drawing.Point(14, 12);
             this.txtDisplay.Multiline = true;
             this.txtDisplay.Name = "txtDisplay";
             this.txtDisplay.ReadOnly = true;

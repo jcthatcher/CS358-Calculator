@@ -60,8 +60,7 @@ namespace Calculator_1
                     else
                     {
                         WriteToDisplay(result[1], true);
-                    }
-                    
+                    }                    
                 }  
             }
             
@@ -122,7 +121,6 @@ namespace Calculator_1
             EvaluateCharacterKeyPress('0');
         }
 
-
         //Capture Key Press to allow 10 key entry. 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -135,8 +133,6 @@ namespace Calculator_1
             {
                 EvaluateOperatorKeyPress(e.KeyChar);
             }
-
         }
-
     }
 }
