@@ -31,14 +31,11 @@ namespace Calculator_1
 
         private void EvaluateOperatorKeyPress(char c) //operation key (+,*,-,/,=)  pressed.  
         {
-            string[] result;
-            double valid;
-
             //Check to see if there is new input in textbox...Ensure someone is not just hitting + over and over.
             if (displayText.Length>0 && displayDirty)
             {
                 //Validate stringbuilder (display text) and write to double. Prompt...
-                if (!double.TryParse(displayText.ToString(), out valid))
+                if (!decimal.TryParse(displayText.ToString(), out decimal valid))
                 {
                     MessageBox.Show("Invalid Input.You entered " + displayText.ToString());
                 }
@@ -50,21 +47,19 @@ namespace Calculator_1
                     displayDirty = false;
 
                     //Perform any calculator operations previously required before preparing for new ops (i.e. new key press)
-                    result = CalcOps.EvaluateOperator(ops, valid);
+                    string[] result = CalcOps.EvaluateOperator(ops, valid);
 
                     //Write result to the display.
                     if(result[0] == "-1")
                     {
-                        WriteToDisplay(result[1], false);
+                        txtDisplay.Text = DisplayOps.WriteToDisplay(result[1], false);
                     }
                     else
                     {
-                        WriteToDisplay(result[1], true);
+                        txtDisplay.Text = DisplayOps.WriteToDisplay(result[1], true);
                     }                    
                 }  
             }
-            
-
             //Record new ops to be performed according to key press.
             ops = c;            
         }
@@ -87,13 +82,7 @@ namespace Calculator_1
             displayText.Append(key);
 
             //Update display with sb value.
-            WriteToDisplay(displayText.ToString(), true);
-        }
-
-        private void WriteToDisplay(string textToDisplay, bool number)
-        {
-            string result = DisplayOps.GetFormattedDisplayText(textToDisplay, number);
-            txtDisplay.Text = result;
+            txtDisplay.Text = DisplayOps.WriteToDisplay(displayText.ToString(), true);
         }
 
         private void btnClear_Click(object sender, EventArgs e)

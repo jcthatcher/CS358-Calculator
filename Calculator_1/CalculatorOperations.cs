@@ -8,13 +8,13 @@ namespace Calculator_1
 {
     class CalculatorOperations
     {
-        double total;
+        decimal total;
         char[] allowedChar;
         char[] allowedOps;
 
         public CalculatorOperations()
         {
-            total = 0.0d;
+            total = 0.0m;
             allowedChar = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.' };
             allowedOps = new char[] { '+', '-', '*', '/', '=', (char)13 };
         }
@@ -30,32 +30,32 @@ namespace Calculator_1
         }
 
         //overkill here but...
-        public double AddTwoNumbers(double a, double b)
+        public decimal AddTwoNumbers(decimal a, decimal b)
         {
             return a + b;
         }
 
-        public double SubtractTwoNumbers(double a, double b)
+        public decimal SubtractTwoNumbers(decimal a, decimal b)
         {
             return a - b;
         }
 
-        public double MultiplyTwoNumbers(double a, double b)
+        public decimal MultiplyTwoNumbers(decimal a, decimal b)
         {
             return a * b;
         }
 
-        public double DivideTwoNumbers(double a, double b)
+        public decimal DivideTwoNumbers(decimal a, decimal b)
         {
             return a / b;
         }
 
         public void ResetCalcatorOps()
         {
-            total = 0.00d;
+            total = 0.00m;
         }
 
-        public string[] EvaluateOperator(char ops, double number)
+        public string[] EvaluateOperator(char ops, decimal number)
         {
             string msg, error = " ";
             if(ops == '/' && number == 0)
@@ -76,11 +76,30 @@ namespace Calculator_1
                 total = number;                
             }
 
-            string[] result = { msg, msg=="-1" ? error : total.ToString()};
+            string totalToString = total.ToString();
+
+            if (totalToString.Contains('.') && totalToString[totalToString.Length-1] == '0')
+            {
+                while (totalToString[(totalToString.Length - 1)] == '0')
+                {
+                    string temp2 = " ";
+                    temp2 = totalToString.Remove(totalToString.Length - 1);
+                    totalToString = temp2;
+                }
+
+                if (totalToString[(totalToString.Length - 1)] == '.')
+                {
+                    string temp2 = " ";
+                    temp2 = totalToString.Remove(totalToString.Length - 1);
+                    totalToString = temp2;
+                }
+            }
+
+            string[] result = { msg, msg=="-1" ? error : totalToString};
             return result;
         }
 
-        private double PerformCalculation(double number, char ops)
+        private decimal PerformCalculation(decimal number, char ops)
         {
             switch (ops)
             {
@@ -102,7 +121,7 @@ namespace Calculator_1
                     }
                 default:
                     {
-                        return 0.00d;
+                        return 0.00m;
                     }
             }
         }

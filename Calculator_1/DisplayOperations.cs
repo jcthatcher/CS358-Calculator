@@ -92,7 +92,12 @@ namespace Calculator_1
 
             return FormattedText;
         }
-        
+
+        public string WriteToDisplay(string textToDisplay, bool number)
+        {
+            return GetFormattedDisplayText(textToDisplay, number);            
+        }
+
         public string FormattedText { get => formattedText; set => formattedText = value; }
 
         //Get Decimal Position, if any
@@ -105,7 +110,7 @@ namespace Calculator_1
                 if (displayText.IndexOf('.') == displayText.LastIndexOf('.'))
                 {                    
                     decimalPosition = displayText.IndexOf('.');
-                    leftOfDecimalLength = decimalPosition - 1;
+                    leftOfDecimalLength = decimalPosition;
                     rightOfDecimalLength = displayText.Length - decimalPosition - 1;
                 }
                 else
@@ -114,22 +119,24 @@ namespace Calculator_1
                     isANumber = false;
                     FormattedText = "too many '.'";
                 }
-            }            
+            }
+            else
+            {
+                decimalPresent = false;
+            }
         }
-
-        private void GetExpDecimal()
-        
+       
+        private void GetExpDecimal()        
         {
             string dec = displayText;
-
-            bool canBeADouble = double.TryParse(dec, out double z);
+            bool canBeADecimal = decimal.TryParse(dec, out decimal z);
             int decimalLocation;
             int firstNonZeroNumber = 0;
             string eNotation = " ";
             int maxLength = 9;
             string result = "0";
 
-            if (canBeADouble)
+            if (canBeADecimal)
             {
                 decimalLocation = dec.IndexOf('.');
 
@@ -212,8 +219,6 @@ namespace Calculator_1
             FormattedText = result + eNotation;
         }
 
-        
-
         //Display rules and check for violation....
         private void ValidateDisplayText()
         {
@@ -239,7 +244,7 @@ namespace Calculator_1
                         CreateExponent();
                     }                    
                 }
-                else if (decimalPresent && leftOfDecimalLength > 3)
+                else if (decimalPresent && !exp && leftOfDecimalLength > 3)
                 {
                     needsComma = true;
                     InsertComma();
